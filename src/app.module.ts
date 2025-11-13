@@ -5,6 +5,9 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
 import { join } from 'path';
 import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
+import { ProductsModule } from './products/products.module';
+
 
 @Module({
   imports: [
@@ -15,6 +18,8 @@ import { UsersModule } from './users/users.module';
       driver: ApolloDriver,
       autoSchemaFile: './schema.gql',
       playground: true,
+      context: ({ req }: { req: Request }) => ({ req }), // <-- type req
+
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
@@ -27,6 +32,8 @@ import { UsersModule } from './users/users.module';
       synchronize: true,
     }),
     UsersModule,
+    AuthModule,
+    ProductsModule,
   ],
   controllers: [],
   providers: [],

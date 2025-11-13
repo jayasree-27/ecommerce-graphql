@@ -2,22 +2,59 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Product {
+  id: Int!
+  name: String!
+  description: String
+  price: Float!
+  stock_quantity: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  owner: User!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type User {
   id: ID!
-  name: String!
   email: String!
+  firstName: String!
+  lastName: String!
+  role: UserRole!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+enum UserRole {
+  ADMIN
+  USER
 }
 
 type Query {
-  findAllUsers: [User!]!
+  users: [User!]!
+  products: [Product!]!
 }
 
 type Mutation {
-  createUser(createUserDto: CreateUserDto!): User!
+  register(input: CreateUserDto!): User!
+  login(email: String!, password: String!): String!
+  createProduct(input: CreateProductDto!): Product!
 }
 
 input CreateUserDto {
-  name: String!
   email: String!
   password: String!
+  firstName: String!
+  lastName: String!
+  role: UserRole
+}
+
+input CreateProductDto {
+  name: String!
+  description: String
+  price: Int!
+  stock_quantity: Int
 }
