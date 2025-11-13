@@ -1,22 +1,61 @@
-import { Entity, PrimaryGeneratedColumn,Column } from "typeorm";
-import { ObjectType, Field, Int, ID } from "@nestjs/graphql";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn,OneToMany, UpdateDateColumn } from "typeorm";
+import { ObjectType, Field, registerEnumType, ID } from "@nestjs/graphql";
+import { Product } from '../products/products.entity';
+
+
+export enum UserRole {
+    ADMIN = 'admin',
+    USER = 'user',
+}
+
+registerEnumType(UserRole, {
+    name: 'UserRole', // GraphQL enum name
+});
+
 
 @ObjectType()
 @Entity()
-export class User{
+export class User {
     @Field(() => ID)
     @PrimaryGeneratedColumn()
-    id!:number;
+    id!: number;
+
+    @Field()
+    @Column({ unique: true })
+    email!: string;
+
+    @Column()
+    password!: string;
 
     @Field()
     @Column()
-    name!:string;
+    firstName!: string;
 
     @Field()
     @Column()
-    email!:string;
+    lastName!: string;
 
-    @Column()
-    password!:string;
+    @Field(() => UserRole)
+    @Column({
+        type: 'enum',
+        enum: UserRole,
+        default: UserRole.USER
+    })
+    role!: UserRole;
 
+    @Field()
+    @CreateDateColumn({
+        type: 'timestamp'
+    })
+    createdAt!: Date;
+
+    @Field()
+    @UpdateDateColumn({
+        type: 'timestamp'
+    })
+    updatedAt!: Date;
+
+    @OneToMany(() => Product, (product) => product.owner)
+    products?: Product[] ;
 }
+
